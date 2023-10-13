@@ -1,0 +1,10 @@
+,0,1,$
+A,B,C
+B,D,E
+C,A,F
+D,F,G
+E,G
+F,H,I
+G,I
+H,H
+I,A,B
