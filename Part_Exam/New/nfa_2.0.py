@@ -5,32 +5,40 @@ import math
 
 original_stdout = sys.stdout
 
-nombre_archivo = "Trabajo.txt"
+nombre_archivo = "Trabajo_NFA.dot"  # Cambiar la extensión del archivo a .dot
 
-with open(nombre_archivo, 'w') as archivo:
-    sys.stdout = archivo
+with open(nombre_archivo, 'w') as archivo_dot:
+    sys.stdout = archivo_dot
     
     delta = pd.read_csv("Data.csv", index_col=0)
     alfabeto = ["x", "w", "z"]
     estado_inicial = "A"
     F = ["A", "B"]
-  
+
+    archivo_dot.write("digraph NFA {\n")
+
     for index, row in delta.iterrows():
         estado_actual = index
         for column, value in row.items():
             simbolo_entrada = column
             if not pd.isna(value):
                 estados_siguientes = value.split(';') if isinstance(value, str) else [value]
-                
-                for estado_siguiente in estados_siguientes:
-                    print(estado_actual, "->", estado_siguiente, "[label =", simbolo_entrada,"];")
 
+                for estado_siguiente in estados_siguientes:
+                    archivo_dot.write(f'  {estado_actual} -> {estado_siguiente} [label="{simbolo_entrada}"];\n')
+
+    archivo_dot.write(f'  {estado_inicial} [shape=circle, style=bold];\n')
+
+    for estado_final in F:
+        archivo_dot.write(f'  {estado_final} [shape=doublecircle];\n')
+
+    archivo_dot.write("}\n")
 
     print("\n")
     print("------------------------------------------------------------")
     print("\n")
 
-    contador_aprobados = 0  
+    contador_aprobados = 0
     for _ in range(500):
         x = [estado_inicial]  # Ahora usamos una lista para almacenar un conjunto de estados
         longitud = random.randint(3, 5)
